@@ -25,9 +25,9 @@ public class Signup {
 
     public List<ValidationError> validate(){
         List<ValidationError> errors = new ArrayList<>();
-        User appUser = User.find.where().eq("email",email).findUnique();
+        User user = User.find.where().eq("email",email).findUnique();
 
-        if(appUser != null)
+        if(user != null)
             errors.add(new ValidationError("message","Email already taken"));
 
         return errors;
