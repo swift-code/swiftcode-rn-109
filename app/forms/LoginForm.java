@@ -8,7 +8,7 @@ import java.util.List;/**
  */
 public class LoginForm {    @Constraints.Required
 public String email;    @Constraints.Required
-public String password;    public List<ValidationError> Validate()
+public String password;    public List<ValidationError> validate()
 {
     List<ValidationError>  errors = new ArrayList<>();
     User user= User.find.where().eq("email", email).findUnique();
