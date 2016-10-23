@@ -40,5 +40,6 @@ public class HomeController extends Controller {
            connectionJson.put("company",connectionProfile.company);
            return (connectionJson);
        }).collect(Collectors.toList())));
+       return ok();
    }
 }
