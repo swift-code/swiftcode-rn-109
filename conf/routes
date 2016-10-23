@@ -3,8 +3,8 @@
 # ~~~~
 POST    /login                                controllers.Application.login()
 POST    /signup                               controllers.Application.signup()
-POST    /request/send/:senderId/:receiverId   controllers.ConnectionController.sendConnectionRequest(senderId: Long, receiverId: Long)
-POST    /request/accept/:id                   controllers.ConnectionController.sendConnectionRequest(id: Long)
+POST    /request/send/:senderId/:receiverId   controllers.RequestController.sendRequest(senderId: Long, receiverId: Long)
+POST    /request/accept/:id                   controllers.RequestController.acceptRequest(id: Long)
 GET     /profile                              controllers.HomeController.getProfile(id: Long)
 
 
