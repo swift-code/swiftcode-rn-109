@@ -5,12 +5,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import models.ConnectionRequest;
 import models.Profile;
 import models.User;
-import play.data.validation.ValidationError;
-import play.db.ebean.Model;
 import play.mvc.Controller;
 import play.mvc.Result;
-import sun.net.ConnectionResetException;
-import sun.rmi.transport.Connection;
 
 import javax.inject.Inject;
 import java.util.stream.Collectors;
@@ -40,6 +36,28 @@ public class HomeController extends Controller {
            connectionJson.put("company",connectionProfile.company);
            return (connectionJson);
        }).collect(Collectors.toList())));
-       return ok();
+
+       data.set("connectionRequests", objectMapper.valueToTree(user.connectionRequestsReceived.stream().filter(x->x.status.equals(ConnectionRequest.Status.WAITING)).map(connectionRequest->{
+           ObjectNode connectionRequestJson = objectMapper.createObjectNode();
+           Profile connectionRequestProfile= Profile.find.byId(connectionRequest.sender.profile.pid);
+           connectionRequestJson.put("id", connectionRequest.cid);
+           connectionRequestJson.put("firstName", connectionRequestProfile.fname);
+           return (connectionRequestJson);
+       }).collect(Collectors.toList())));
+
+       data.set("connectionRequests", objectMapper.valueToTree(User.find.all().stream()
+               .filter(x->!user.equals(x))
+               .filter(x->!user.connections.contains(x))
+               .filter(x->!user.connectionRequestsReceived.stream().map(y->y.sender).collect(Collectors.toList()).contains(x))
+               .filter(x->!user.connectionRequestsSent.stream().map(y->y.receiver).collect(Collectors.toList()).contains(x))
+               .map(x->{
+                   ObjectNode userJson = objectMapper.createObjectNode();
+                   Profile suggestionProfile = Profile.find.byId(x.profile.pid);
+                   userJson.put("id", x.uid);
+                   userJson.put("firstName", suggestionProfile.fname);
+                   return (userJson);
+               })
+               .collect(Collectors.toList())));
+       return ok(data);
    }
 }
